@@ -41,13 +41,14 @@ def BGD(w, alpha, delQi, params):
     w = w + alpha * delQi(w, params)
     return w
 
-def linfn(w, params):
+def lindQi(w, params):
     y = params['y']
     x = params['x']
-    # This is wrong!!!
+    datalen, dummy = np.shape(y)
     h = x.dot(w)
     residue = (h-y)
-    return residue.transpose().dot(x).transpose()
+    dQi = x.transpose().dot(residue)
+    return (2.0/datalen)*dQi
 
 
 init = np.ones((2,1))
@@ -64,7 +65,7 @@ params = {
     'y': y,
     }
 for i in range(no_iter):
-    w = BGD(lastw, 0.0001, linfn, params)
+    w = BGD(lastw, 0.0001, lindQi, params)
     #print w
     lastw = w
     
